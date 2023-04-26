@@ -9,7 +9,7 @@ from tensorflow.keras import layers
 # pylint: disable=E0611,E0401
 from tensorflow.keras.layers import Activation, SpatialDropout1D, Lambda
 # pylint: disable=E0611,E0401
-from tensorflow.keras.layers import Layer, Conv1D, Dense, BatchNormalization, LayerNormalization
+from tensorflow.keras.layers import Layer, SeparableConv1D, Dense, BatchNormalization, LayerNormalization
 
 
 def is_power_of_two(num: int):
@@ -91,7 +91,7 @@ class ResidualBlock(Layer):
             for k in range(2):  # dilated conv block.
                 name = 'conv1D_{}'.format(k)
                 with K.name_scope(name):  # name scope used to make sure weights get unique names
-                    conv = Conv1D(
+                    conv = SeparableConv1D(
                         filters=self.nb_filters,
                         kernel_size=self.kernel_size,
                         dilation_rate=self.dilation_rate,
@@ -124,7 +124,7 @@ class ResidualBlock(Layer):
                 with K.name_scope(name):
                     # make and build this layer separately because it directly uses input_shape.
                     # 1x1 conv.
-                    self.shape_match_conv = Conv1D(
+                    self.shape_match_conv = SeparableConv1D(
                         filters=self.nb_filters,
                         kernel_size=1,
                         padding='same',
